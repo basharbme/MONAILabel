@@ -1,4 +1,4 @@
-# Copyright 2020 - 2021 MONAI Consortium
+# Copyright (c) MONAI Consortium
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -81,7 +81,7 @@ class SegmentationSpleen(TaskConfig):
 
     def infer(self) -> Union[InferTask, Dict[str, InferTask]]:
         task: InferTask = lib.infers.SegmentationSpleen(
-            path=self.path, network=self.network, labels=self.labels, preload=True
+            path=self.path, network=self.network, labels=self.labels, preload=False
         )
         return task
 

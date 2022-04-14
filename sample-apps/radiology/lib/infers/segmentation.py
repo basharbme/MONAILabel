@@ -1,4 +1,4 @@
-# Copyright 2020 - 2021 MONAI Consortium
+# Copyright (c) MONAI Consortium
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # limitations under the License.
 from typing import Callable, Sequence
 
-from monai.inferers import SlidingWindowInferer
+from monai.inferers import Inferer, SlidingWindowInferer
 from monai.transforms import (
     Activationsd,
     AddChanneld,
@@ -36,6 +36,7 @@ class Segmentation(InferTask):
         self,
         path,
         network=None,
+        spatial_size=(48, 48, 48),
         type=InferType.SEGMENTATION,
         labels=None,
         dimension=3,
@@ -51,6 +52,7 @@ class Segmentation(InferTask):
             description=description,
             **kwargs,
         )
+        self.spatial_size = spatial_size
 
     def pre_transforms(self, data=None) -> Sequence[Callable]:
         return [
@@ -61,8 +63,8 @@ class Segmentation(InferTask):
             EnsureTyped(keys="image"),
         ]
 
-    def inferer(self, data=None) -> Callable:
-        return SlidingWindowInferer(roi_size=(160, 160, 160))
+    def inferer(self, data=None) -> Inferer:
+        return SlidingWindowInferer(roi_size=self.spatial_size)
 
     def post_transforms(self, data=None) -> Sequence[Callable]:
         largest_cc = False if not data else data.get("largest_cc", False)
